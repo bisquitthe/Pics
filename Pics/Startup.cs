@@ -1,9 +1,12 @@
+using DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
+using MongoDB.Driver;
 
 namespace Pics
 {
@@ -19,6 +22,8 @@ namespace Pics
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      AddCollectionsToServiceCollection(services);
+      AddReposToServiceCollection(services);
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
       // In production, the React files will be served from this directory
@@ -59,6 +64,20 @@ namespace Pics
           spa.UseReactDevelopmentServer(npmScript: "start");
         }
       });
+    }
+
+    private void AddCollectionsToServiceCollection(IServiceCollection services)
+    {
+      var connectionString = this.Configuration.GetValue<string>("ConnectionString");
+      var mongoClient = new MongoClient(connectionString);
+      var db = mongoClient.GetDatabase("Pics");
+      services.AddTransient(factory => db.GetCollection<Image>("Images"));
+      services.AddTransient(factory => db.GetCollection<User>("Users"));
+    }
+
+    private void AddReposToServiceCollection(IServiceCollection services)
+    {
+      services.AddTransient<IImageRepository, ImageRepository>();
     }
   }
 }
