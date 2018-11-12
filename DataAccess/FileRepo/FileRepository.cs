@@ -2,7 +2,7 @@
 
 namespace DataAccess.FileRepo
 {
-  public abstract class FileRepository : IFileRepository
+  public abstract class FileRepository
   {
   
     public abstract void Save(string filename);

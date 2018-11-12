@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Pics.ViewModels;
 using Services;
 
 namespace Pics.Controllers
@@ -22,9 +23,10 @@ namespace Pics.Controllers
 
     [HttpPost]
     [Route("images/new")]
-    public OkResult ImportImage(IFormFile image)
+    public OkResult ImportImage(ImageUploadingFileViewModel imageUploadingFile)
     {
-      this.imageService.ImportImage(image.OpenReadStream());
+      imageUploadingFile.Image.Name = imageUploadingFile.UploadingFile.FileName;
+      this.imageService.ImportImage(imageUploadingFile.Image, imageUploadingFile.UploadingFile.OpenReadStream());
       return Ok();
     }
 

@@ -25,7 +25,7 @@ namespace Services
     public void ImportImage(Image image, Stream uploadingFileStream)
     {
       this.dbImageRepository.AddImage(image);
-      this.imageFileRepository.Save(image.)
+      this.imageFileRepository.Save(image.Name, uploadingFileStream);
     }
 
     public void RemoveImage(string id)

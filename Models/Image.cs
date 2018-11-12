@@ -11,5 +11,6 @@ namespace Models
     public ObjectId UserId { get; set; }
     public DateTime CreationTime { get; set; }
     public string ShortTitle { get; set; }
+    public string Name { get; set; }
   }
 }
