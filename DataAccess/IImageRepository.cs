@@ -7,9 +7,9 @@ namespace DataAccess
 {
   public interface IImageRepository
   {
-    Task<ICollection<Image>> GetImages(int page);
+    Task<ICollection<Image>> GetImages(int skip, int count);
     Task<Image> GetImage(string id);
     Task AddImage(Image image);
-    Task RemoveImage(string image);
+    Task RemoveImage(string id);
   }
 }

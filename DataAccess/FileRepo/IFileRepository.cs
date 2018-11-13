@@ -4,10 +4,9 @@ using Models;
 
 namespace DataAccess.FileRepo
 {
-  public interface IFileRepository
+  public interface IFileRepository<T>
   {
     Task Save(string filename, Stream uploadingFileStream);
-    Task<Image> Load(string filename);
-    bool Exists(string filename);
+    void Remove(string filename);
   }
 }

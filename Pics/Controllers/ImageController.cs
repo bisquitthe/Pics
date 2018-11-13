@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pics.ViewModels;
+using Models;
+using MongoDB.Bson;
 using Services;
 
 namespace Pics.Controllers
@@ -8,6 +11,8 @@ namespace Pics.Controllers
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
+    private const int PageCapacity = 10;
+
     public ImageController(IImageService imageService)
     {
       this.imageService = imageService;
@@ -17,22 +22,41 @@ namespace Pics.Controllers
     [Route("images")]
     public ObjectResult GetImages(int page)
     {
-      var images = this.imageService.GetImages(page);
+      var images = this.imageService.GetImages(page, PageCapacity);
       return Ok(images);
     }
 
     [HttpPost]
     [Route("images/new")]
-    public OkResult ImportImage(ImageUploadingFileViewModel imageUploadingFile)
+    public async Task<ActionResult> ImportImage()
     {
-      imageUploadingFile.Image.Name = imageUploadingFile.UploadingFile.FileName;
-      this.imageService.ImportImage(imageUploadingFile.Image, imageUploadingFile.UploadingFile.OpenReadStream());
+      var uploadingFile = Request.Form.Files.FirstOrDefault();
+      if (uploadingFile == null)
+        return BadRequest();
+      var imported = false;
+      var imageCreationInfo = new ImageCreationInfo
+      {
+        Name = uploadingFile.FileName,
+        UserId = ObjectId.GenerateNewId().ToString()
+      };
+      try
+      {
+        imported = await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
+      }
+      catch (Exception)
+      {
+        return BadRequest(); 
+      }
+
+      if (!imported)
+        return BadRequest();
+
       return Ok();
     }
 
     [HttpPost]
     [Route("images/remove")]
-    public OkResult RemoveImage(string id)
+    public ActionResult RemoveImage(string id)
     {
       this.imageService.RemoveImage(id);
       return Ok();

@@ -13,9 +13,13 @@ namespace DataAccess
       this.imageCollection = imageCollection;
     }
 
-    public async Task<ICollection<Image>> GetImages(int page)
+    public async Task<ICollection<Image>> GetImages(int skip, int count)
     {
-      var images = await this.imageCollection.Find(i => true).ToListAsync();
+      var images = await this.imageCollection
+        .Find(i => true)
+        .Skip(skip)
+        .Limit(count)
+        .ToListAsync();
       return images;
     }
 
@@ -30,9 +34,9 @@ namespace DataAccess
       await this.imageCollection.InsertOneAsync(image);
     }
 
-    public Task RemoveImage(string image)
+    public async Task RemoveImage(string id)
     {
-      throw new System.NotImplementedException();
+      await this.imageCollection.DeleteOneAsync(i => i.Id.ToString() == id);
     }
   }
 }

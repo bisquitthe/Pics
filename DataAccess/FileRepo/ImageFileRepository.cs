@@ -1,18 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DataAccess.FileRepo;
 using Models;
 
 namespace DataAccess
 {
-  class ImageFileRepository : IFileRepository
+  public class ImageFileRepository : IFileRepository<Image>
   {
     private readonly string directoryName;
-
-    public ImageFileRepository(string rootPath)
-    {
-      this.directoryName = Path.Combine(rootPath, "user_images_files");
-    }
+    private readonly DirectoryInfo directoryInfo;
 
     public async Task Save(string filename, Stream uploadingFileStream)
     {
@@ -24,14 +22,25 @@ namespace DataAccess
       }
     }
 
-    public Task<Image> Load(string filename)
+    public void Remove(string filename)
     {
-      throw new System.NotImplementedException();
+      var fileInfo = this.GetFileInfo(Path.Combine(this.directoryName, filename));
+      if (!fileInfo.Exists)
+        return;
+
+      fileInfo.Delete();
     }
 
-    public bool Exists(string filename)
+    private FileInfo GetFileInfo(string filename)
     {
-      throw new System.NotImplementedException();
+      var fileInfo = new FileInfo(filename);
+      return fileInfo;
+    }
+
+    public ImageFileRepository(string rootPath)
+    {
+      this.directoryName = Path.Combine(rootPath, "user_images_files");
+      this.directoryInfo = new DirectoryInfo(this.directoryName);
     }
   }
 }

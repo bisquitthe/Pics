@@ -13,4 +13,10 @@ namespace Models
     public string ShortTitle { get; set; }
     public string Name { get; set; }
   }
+
+  public class ImageCreationInfo
+  {
+    public string UserId { get; set; }
+    public string Name { get; set; }
+  }
 }

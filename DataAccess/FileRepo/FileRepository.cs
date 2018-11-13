@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-
-namespace DataAccess.FileRepo
+﻿namespace DataAccess.FileRepo
 {
   public abstract class FileRepository
   {
