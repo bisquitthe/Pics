@@ -7,5 +7,6 @@ namespace DataAccess
   {
     Task<User> GetByLoginAndPasswordHash(string login, string passwordHash);
     Task<User> AddUser(string login, string passwordHash);
+    Task<User> GetUserByLogin(string login);
   }
 }

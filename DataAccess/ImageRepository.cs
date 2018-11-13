@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Exceptions;
 using Models;
 using MongoDB.Driver;
 
@@ -21,7 +22,7 @@ namespace DataAccess
 
     public async Task<Image> GetImage(string id)
     {
-      var image = await imageCollection.Find(i => i.Id.ToString() == id).SingleAsync();
+      var image = await imageCollection.Find(i => i.Id == id).SingleOrDefaultAsync();
       return image;
     }
 
@@ -32,7 +33,10 @@ namespace DataAccess
 
     public async Task RemoveImage(string id)
     {
-      await this.imageCollection.DeleteOneAsync(i => i.Id.ToString() == id);
+      var deleteResult =
+        await this.imageCollection.DeleteOneAsync(i => i.Id == id);
+      if(deleteResult.DeletedCount == 0)
+        throw new ImageNotFound(id);
     }
 
     public ImageRepository(IMongoCollection<Image> imageCollection)

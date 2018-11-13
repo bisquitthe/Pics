@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using DataAccess;
 using DataAccess.FileRepo;
+using Exceptions;
 using Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -18,7 +19,10 @@ namespace Services
 
     public async Task<IEnumerable<Image>> GetImages(int page, int pageCapacity)
     {
-      return await this.dbImageRepository.GetImages(pageCapacity * page, pageCapacity);
+      if (page <= 0)
+        throw new ArgumentException("Page cannot be equal or less than 0.");
+
+      return await this.dbImageRepository.GetImages(skip: pageCapacity * (page - 1), count: pageCapacity);
     }
 
     public async Task<bool> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream)
@@ -27,7 +31,7 @@ namespace Services
       {
         Name = imageCreationInfo.Name,
         CreationTime = DateTime.Now,
-        UserId = ObjectId.Parse(imageCreationInfo.UserId)
+        UserId = imageCreationInfo.UserId
       };
 
       //Needs transactions.
@@ -41,11 +45,19 @@ namespace Services
     {
       var image = await this.dbImageRepository.GetImage(id);
       if (image == null)
-        return false;
+        throw new ImageNotFound(id);
 
-      //Need transactions.
-      await this.dbImageRepository.RemoveImage(id);
-      this.imageFileRepository.Remove(image.Name);
+      try
+      {
+        //Need transactions.
+        await this.dbImageRepository.RemoveImage(id);
+        this.imageFileRepository.Remove(image.Name);
+      }
+      catch (ImageNotFound)
+      {
+        //log
+        throw;
+      }
 
       return true;
     }

@@ -30,6 +30,12 @@ namespace DataAccess
       return newUser;
     }
 
+    public async Task<User> GetUserByLogin(string login)
+    {
+      var user = await this.usersCollection.Find(u => u.Login == login).SingleOrDefaultAsync();
+      return user;
+    }
+
     public UserRepository(IMongoCollection<User> usersCollection)
     {
       this.usersCollection = usersCollection;

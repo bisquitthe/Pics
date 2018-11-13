@@ -7,10 +7,10 @@ namespace Models
   public class Image
   {
     [BsonId]
-    public ObjectId Id { get; set; }
-    public ObjectId UserId { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; }
+    public string UserId { get; set; }
     public DateTime CreationTime { get; set; }
-    public string ShortTitle { get; set; }
     public string Name { get; set; }
   }
 

@@ -32,6 +32,11 @@ namespace Services
       return user;
     }
 
+    public async Task<User> GetUserByLogin(string login)
+    {
+      return await this.userRepository.GetUserByLogin(login);
+    }
+
     public UserService(IUserRepository userRepository)
     {
       this.userRepository = userRepository;

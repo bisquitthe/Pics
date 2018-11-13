@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using MongoDB.Bson;
 using Services;
 
 namespace Pics.Controllers
@@ -13,54 +13,70 @@ namespace Pics.Controllers
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
+    private readonly IUserService userService;
+
     private const int PageCapacity = 10;
 
-    public ImageController(IImageService imageService)
+    public ImageController(IImageService imageService, IUserService userService)
     {
       this.imageService = imageService;
+      this.userService = userService;
     }
 
-    [HttpGet]
-    [Route("images")]
-    public IActionResult GetImages(int page)
+    [HttpGet("images")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> GetImages(int page)
     {
-      var images = this.imageService.GetImages(page, PageCapacity);
+      IEnumerable<Image> images;
+      try
+      {
+        images = await this.imageService.GetImages(page, PageCapacity);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
+
       return Ok(images);
     }
 
-    [HttpPost]
-    [Route("images/new")]
+    [HttpPost("images/new")]
     [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> ImportImage(IFormFile uploadingFile)
     {
       if (uploadingFile == null)
         return BadRequest();
-      var imported = false;
+
       var imageCreationInfo = new ImageCreationInfo
       {
         Name = uploadingFile.FileName,
-        UserId = ObjectId.GenerateNewId().ToString()
+        UserId = (await this.userService.GetUserByLogin(User.Identity.Name)).Id
       };
       try
       {
-        imported = await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
+        await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
       }
       catch (Exception ex)
       {
         return BadRequest(ex.Message); 
       }
 
-      if (!imported)
-        return BadRequest();
-
       return Ok();
     }
 
-    [HttpPost]
-    [Route("images/remove")]
-    public IActionResult RemoveImage(string id)
+    [HttpPost("images/remove")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> RemoveImage(string id)
     {
-      this.imageService.RemoveImage(id);
+      try
+      {
+        await this.imageService.RemoveImage(id);
+      }
+      catch (ImageNotFound ex)
+      {
+        return BadRequest(ex.Message);
+      }
+
       return Ok();
     }
   }

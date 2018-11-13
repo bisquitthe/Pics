@@ -1,5 +1,3 @@
-using System.IO;
-using System.Threading.Tasks;
 using DataAccess;
 using DataAccess.FileRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
