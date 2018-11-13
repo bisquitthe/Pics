@@ -11,5 +11,6 @@ namespace DataAccess
     Task<Image> GetImage(string id);
     Task AddImage(Image image);
     Task RemoveImage(string id);
+    long GetCount();
   }
 }

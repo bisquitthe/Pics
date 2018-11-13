@@ -62,6 +62,14 @@ namespace Services
       return true;
     }
 
+    public long GetPagesCount(int pageCapacity)
+    {
+      var imagesCount = this.dbImageRepository.GetCount();
+      return (imagesCount % pageCapacity) == 0 ?
+        (imagesCount / pageCapacity) :
+        (imagesCount / pageCapacity + 1);
+    }
+
     public ImageService(IImageRepository dbImageRepository, IFileRepository<Image> imageFileRepository)
     {
       this.dbImageRepository = dbImageRepository;

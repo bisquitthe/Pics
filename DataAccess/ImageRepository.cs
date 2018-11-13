@@ -17,6 +17,7 @@ namespace DataAccess
         .Skip(skip)
         .Limit(count)
         .ToListAsync();
+
       return images;
     }
 
@@ -37,6 +38,11 @@ namespace DataAccess
         await this.imageCollection.DeleteOneAsync(i => i.Id == id);
       if(deleteResult.DeletedCount == 0)
         throw new ImageNotFound(id);
+    }
+
+    public long GetCount()
+    {
+      return this.imageCollection.CountDocuments(i => true);
     }
 
     public ImageRepository(IMongoCollection<Image> imageCollection)

@@ -10,5 +10,6 @@ namespace Services
     Task<IEnumerable<Image>> GetImages(int page, int pageCapacity);
     Task<bool> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream);
     Task<bool> RemoveImage(string id);
+    long GetPagesCount(int pageCapacity);
   }
 }

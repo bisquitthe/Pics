@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\components\login\" />
     <Folder Include="ClientApp\src\components\register\" />
   </ItemGroup>
 

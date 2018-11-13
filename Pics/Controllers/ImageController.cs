@@ -10,6 +10,7 @@ using Services;
 
 namespace Pics.Controllers
 {
+  [Authorize(AuthenticationSchemes = "Bearer")]
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
@@ -24,7 +25,6 @@ namespace Pics.Controllers
     }
 
     [HttpGet("images")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetImages(int page)
     {
       IEnumerable<Image> images;
@@ -41,7 +41,6 @@ namespace Pics.Controllers
     }
 
     [HttpPost("images/new")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> ImportImage(IFormFile uploadingFile)
     {
       if (uploadingFile == null)
@@ -65,7 +64,6 @@ namespace Pics.Controllers
     }
 
     [HttpPost("images/remove")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> RemoveImage(string id)
     {
       try
@@ -78,6 +76,13 @@ namespace Pics.Controllers
       }
 
       return Ok();
+    }
+
+    [HttpGet("images/pagescount")]
+    public IActionResult GetPagesCount()
+    {
+      var imagesCount = this.imageService.GetPagesCount(PageCapacity);
+      return Ok(imagesCount);
     }
   }
 }
