@@ -65,7 +65,7 @@ namespace Pics.Controllers
     }
 
     [HttpPost("images/remove")]
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> RemoveImage(string id)
     {
       try
