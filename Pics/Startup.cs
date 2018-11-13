@@ -1,3 +1,5 @@
+using System.IO;
+using System.Threading.Tasks;
 using DataAccess;
 using DataAccess.FileRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,9 +39,9 @@ namespace Pics
           options.TokenValidationParameters = new TokenValidationParameters
           {
             ValidateIssuer = true,
-            ValidIssuer = AuthOptions.ISSUER,
+            ValidIssuer = AuthOptions.Issuer,
             ValidateAudience = true,
-            ValidAudience = AuthOptions.AUDIENCE,
+            ValidAudience = AuthOptions.Audience,
             ValidateLifetime = true,
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
             ValidateIssuerSigningKey = true,
@@ -94,8 +96,8 @@ namespace Pics
       var connectionString = this.Configuration.GetValue<string>("ConnectionString");
       var mongoClient = new MongoClient(connectionString);
       var db = mongoClient.GetDatabase("Pics");
-      services.AddTransient(factory => db.GetCollection<Image>("Images"));
-      services.AddTransient(factory => db.GetCollection<User>("Users"));
+      services.AddSingleton(factory => db.GetCollection<Image>("Images"));
+      services.AddSingleton(factory => db.GetCollection<User>("Users"));
     }
 
     private void AddReposToServiceCollection(IServiceCollection services)
@@ -104,6 +106,9 @@ namespace Pics
       services.AddTransient<IFileRepository<Image>, ImageFileRepository>(_ =>
         new ImageFileRepository(this.ContentRoot));
       services.AddTransient<IImageService, ImageService>();
-    }
+      services.AddTransient<IUserRepository, UserRepository>();
+      services.AddTransient<IAuthService, AuthService>();
+      services.AddTransient<IUserService, UserService>();
+    }   
   }
 }

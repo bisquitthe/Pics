@@ -8,10 +8,6 @@ namespace DataAccess
   public class ImageRepository : IImageRepository
   {
     public readonly IMongoCollection<Image> imageCollection;
-    public ImageRepository(IMongoCollection<Image> imageCollection)
-    {
-      this.imageCollection = imageCollection;
-    }
 
     public async Task<ICollection<Image>> GetImages(int skip, int count)
     {
@@ -37,6 +33,13 @@ namespace DataAccess
     public async Task RemoveImage(string id)
     {
       await this.imageCollection.DeleteOneAsync(i => i.Id.ToString() == id);
+    }
+
+    public ImageRepository(IMongoCollection<Image> imageCollection)
+    {
+      this.imageCollection = imageCollection;
+      this.imageCollection.Indexes.CreateOne(new CreateIndexModel<Image>(
+        Builders<Image>.IndexKeys.Ascending(i => i.Name), new CreateIndexOptions() {Unique = true}));
     }
   }
 }

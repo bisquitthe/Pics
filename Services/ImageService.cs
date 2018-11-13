@@ -7,6 +7,7 @@ using DataAccess;
 using DataAccess.FileRepo;
 using Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Services
 {
@@ -22,20 +23,16 @@ namespace Services
 
     public async Task<bool> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream)
     {
-      using (var ts = new TransactionScope())
+      var image = new Image
       {
-        var image = new Image
-        {
-          Name = imageCreationInfo.Name,
-          CreationTime = DateTime.Now,
-          UserId = ObjectId.Parse(imageCreationInfo.UserId)
-        };
+        Name = imageCreationInfo.Name,
+        CreationTime = DateTime.Now,
+        UserId = ObjectId.Parse(imageCreationInfo.UserId)
+      };
 
-        await this.dbImageRepository.AddImage(image);
-        await this.imageFileRepository.Save(image.Name, uploadingFileStream);
-
-        ts.Complete();
-      }
+      //Needs transactions.
+      await this.dbImageRepository.AddImage(image);
+      await this.imageFileRepository.Save(image.Name, uploadingFileStream);
 
       return true;
     }
@@ -46,11 +43,9 @@ namespace Services
       if (image == null)
         return false;
 
-      using (var ts = new TransactionScope())
-      {
-        await this.dbImageRepository.RemoveImage(id);
-        this.imageFileRepository.Remove(image.Name);
-      }
+      //Need transactions.
+      await this.dbImageRepository.RemoveImage(id);
+      this.imageFileRepository.Remove(image.Name);
 
       return true;
     }

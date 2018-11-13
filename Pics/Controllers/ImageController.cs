@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using MongoDB.Bson;
@@ -20,7 +22,7 @@ namespace Pics.Controllers
 
     [HttpGet]
     [Route("images")]
-    public ObjectResult GetImages(int page)
+    public IActionResult GetImages(int page)
     {
       var images = this.imageService.GetImages(page, PageCapacity);
       return Ok(images);
@@ -28,9 +30,9 @@ namespace Pics.Controllers
 
     [HttpPost]
     [Route("images/new")]
-    public async Task<ActionResult> ImportImage()
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> ImportImage(IFormFile uploadingFile)
     {
-      var uploadingFile = Request.Form.Files.FirstOrDefault();
       if (uploadingFile == null)
         return BadRequest();
       var imported = false;
@@ -43,9 +45,9 @@ namespace Pics.Controllers
       {
         imported = await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-        return BadRequest(); 
+        return BadRequest(ex.Message); 
       }
 
       if (!imported)
@@ -56,7 +58,7 @@ namespace Pics.Controllers
 
     [HttpPost]
     [Route("images/remove")]
-    public ActionResult RemoveImage(string id)
+    public IActionResult RemoveImage(string id)
     {
       this.imageService.RemoveImage(id);
       return Ok();
