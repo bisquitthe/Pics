@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using DTO;
 using Models;
 
 namespace Services
 {
   public interface IImageService
   {
-    Task<IEnumerable<Image>> GetImages(int page, int pageCapacity);
-    Task<bool> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream);
+    Task<ImagesWithPagingInfo> GetImages(int page);
+    Task<Image> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream);
     Task<bool> RemoveImage(string id);
-    long GetPagesCount(int pageCapacity);
   }
 }

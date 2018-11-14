@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DataAccess;
 using Exceptions;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Pics.ViewModels;
@@ -10,6 +11,7 @@ using Services;
 namespace Pics.Controllers
 {
   [ApiController]
+  [DisableCors]
   public class UserController : Controller
   {
     private readonly IAuthService authService;

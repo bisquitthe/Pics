@@ -13,6 +13,8 @@ namespace Models
     public DateTime CreationTime { get; set; }
     public string Name { get; set; }
     public string Filename { get; set; }
+    [BsonIgnore]
+    public string Base64 { get; set; }
   }
 
   public class ImageCreationInfo

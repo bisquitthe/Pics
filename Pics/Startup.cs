@@ -49,12 +49,6 @@ namespace Pics
           };
         });
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-      // In production, the React files will be served from this directory
-      //services.AddSpaStaticFiles(configuration =>
-      //{
-      //  configuration.RootPath = "ClientApp/build";
-      //});
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,20 +57,15 @@ namespace Pics
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
-        //app.UseWebpackDevMiddleware();
+        app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
       }
       else
       {
         app.UseExceptionHandler("/Error");
       }
 
-      app.UseStaticFiles(new StaticFileOptions()
-      {
-        FileProvider = new PhysicalFileProvider(
-          Path.Combine(Directory.GetCurrentDirectory(), @"ClientApp/")),
-        RequestPath = new PathString("/ClientApp")
-      });
-      //app.UseSpaStaticFiles();
+      app.UseDefaultFiles();
+      app.UseStaticFiles();
 
       app.UseMvc(routes =>
       {
@@ -85,16 +74,6 @@ namespace Pics
                   template: "{controller}/{action=Index}/{id?}");
         routes.MapSpaFallbackRoute("spa-fallback", new {controller = "Home", action = "Index"});
       });
-
-      //app.UseSpa(spa =>
-      //{
-      //  spa.Options.SourcePath = "ClientApp";
-
-      //  if (env.IsDevelopment())
-      //  {
-      //    //spa.UseReactDevelopmentServer(npmScript: "start");
-      //  }
-      //});
 
       this.ContentRoot = env.ContentRootPath;
     }

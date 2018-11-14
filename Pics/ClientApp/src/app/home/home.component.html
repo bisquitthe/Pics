@@ -1,0 +1,30 @@
+<div class="container-fluid">
+  <div class="row">
+    <nav class="navbar navbar-dark bg-dark mb-5 col-lg-12 align-content-between">
+      <a class="navbar-brand" href="/">Pics</a>
+      <div class="navbar-expand ml-auto navbar-nav">
+        <div class="navbar-nav">
+          <div class="user-login">Hi, {{currentUser.login}}!</div>
+          <div><a [routerLink]="['/login']">Logout</a></div>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div>
+    <input type="file" (change)="handleFileChange($event)" />
+    <button (click)="handleClick()">Upload</button>
+  </div>
+  <div class="row">
+    <div class="column" *ngFor="let imageGroup of images | groupByCapacity: 4 | paginate: { itemsPerPage: countPerPage, currentPage: currentPage, totalItems: totalImagesCount }">
+      <div class="image" *ngFor="let image of imageGroup ">
+        <img [src]="image.safeBase64" style="width:100%">
+        <a (click)="removeImage(image.id)" class="text-danger">
+          <fa-icon [icon]="faTrash"></fa-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div>
+    <pagination-controls (pageChange)="handlePage($event)" autoHide="true"></pagination-controls>
+  </div>
+</div>

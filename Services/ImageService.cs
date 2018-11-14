@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using DataAccess;
 using DataAccess.FileRepo;
+using DTO;
 using Exceptions;
 using Models;
 using MongoDB.Bson;
@@ -16,16 +17,27 @@ namespace Services
   {
     private readonly IImageRepository dbImageRepository;
     private readonly IFileRepository<Image> imageFileRepository;
-
-    public async Task<IEnumerable<Image>> GetImages(int page, int pageCapacity)
+    private const int PageCapacity = 10;
+    public async Task<ImagesWithPagingInfo> GetImages(int page)
     {
       if (page <= 0)
         throw new ArgumentException("Page cannot be equal or less than 0.");
 
-      return await this.dbImageRepository.GetImages(skip: pageCapacity * (page - 1), count: pageCapacity);
+      var images = await this.dbImageRepository.GetImages(skip: PageCapacity * (page - 1), count: PageCapacity);
+      foreach (var image in images)
+      {
+        image.Base64 = await GetImageBase64(image);
+      }
+      var imagesWithPagingInfo = new ImagesWithPagingInfo
+      {
+        CountPerPage = PageCapacity,
+        Images = images,
+        TotalCount = this.dbImageRepository.GetCount()
+      };
+      return imagesWithPagingInfo;
     }
 
-    public async Task<bool> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream)
+    public async Task<Image> ImportImage(ImageCreationInfo imageCreationInfo, Stream uploadingFileStream)
     {
       var image = new Image
       {
@@ -39,7 +51,9 @@ namespace Services
       await this.dbImageRepository.AddImage(image);
       await this.imageFileRepository.Save(image.Name, uploadingFileStream);
 
-      return true;
+      image.Base64 = await GetImageBase64(image);
+
+      return image;
     }
 
     public async Task<bool> RemoveImage(string id)
@@ -69,6 +83,13 @@ namespace Services
       return (imagesCount % pageCapacity) == 0 ?
         (imagesCount / pageCapacity) :
         (imagesCount / pageCapacity + 1);
+    }
+
+    private async Task<string> GetImageBase64(Image image)
+    {
+      var imageBytes = await File.ReadAllBytesAsync(image.Filename);
+      var base64 = Convert.ToBase64String(imageBytes);
+      return base64;
     }
 
     public ImageService(IImageRepository dbImageRepository, IFileRepository<Image> imageFileRepository)

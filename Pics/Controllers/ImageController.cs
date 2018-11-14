@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DTO;
 using Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -12,12 +14,11 @@ namespace Pics.Controllers
 {
   [Authorize(AuthenticationSchemes = "Bearer")]
   [ApiController]
+  [DisableCors]
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
-    private readonly IUserService userService;
-
-    private const int PageCapacity = 10;
+    private readonly IUserService userService;    
 
     public ImageController(IImageService imageService, IUserService userService)
     {
@@ -26,12 +27,12 @@ namespace Pics.Controllers
     }
 
     [HttpGet("images")]
-    public async Task<IActionResult> GetImages([FromBody]int page)
+    public async Task<IActionResult> GetImages(int page)
     {
-      IEnumerable<Image> images;
+      ImagesWithPagingInfo images;
       try
       {
-        images = await this.imageService.GetImages(page, PageCapacity);
+        images = await this.imageService.GetImages(page);
       }
       catch (ArgumentException ex)
       {
@@ -52,20 +53,21 @@ namespace Pics.Controllers
         Name = uploadingFile.FileName,
         UserId = (await this.userService.GetUserByLogin(User.Identity.Name)).Id
       };
+      Image image;
       try
       {
-        await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
+        image = await this.imageService.ImportImage(imageCreationInfo, uploadingFile.OpenReadStream());
       }
       catch (Exception ex)
       {
         return BadRequest(ex.Message); 
       }
 
-      return Ok();
+      return Ok(image);
     }
 
     [HttpDelete("images/remove")]
-    public async Task<IActionResult> RemoveImage([FromQuery]string id)
+    public async Task<IActionResult> RemoveImage(string id)
     {
       try
       {
@@ -77,13 +79,6 @@ namespace Pics.Controllers
       }
 
       return Ok();
-    }
-
-    [HttpGet("images/pagescount")]
-    public IActionResult GetPagesCount()
-    {
-      var imagesCount = this.imageService.GetPagesCount(PageCapacity);
-      return Ok(imagesCount);
     }
   }
 }
