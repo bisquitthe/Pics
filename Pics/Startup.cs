@@ -60,6 +60,7 @@ namespace Pics
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+        //app.UseWebpackDevMiddleware();
       }
       else
       {
@@ -74,6 +75,7 @@ namespace Pics
         routes.MapRoute(
                   name: "default",
                   template: "{controller}/{action=Index}/{id?}");
+        routes.MapSpaFallbackRoute("spa-fallback", new {controller = "Home", action = "Index"});
       });
 
       app.UseSpa(spa =>
