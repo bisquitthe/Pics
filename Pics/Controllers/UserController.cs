@@ -4,6 +4,7 @@ using DataAccess;
 using Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Pics.ViewModels;
 using Services;
 
 namespace Pics.Controllers
@@ -27,11 +28,13 @@ namespace Pics.Controllers
         return BadRequest("Invalid login or password.");
       }
 
-      return Ok(new
+      var tokenViewModel = new TokenResponseViewModel()
       {
-        access_token = jwtString,
-        username = credentials.Login
-      });
+        login = credentials.Login,
+        access_token = jwtString
+      };
+
+      return Ok(tokenViewModel);
     }
 
     [HttpPost("[controller]/signup")]

@@ -8,5 +8,6 @@ namespace DataAccess.FileRepo
   {
     Task Save(string filename, Stream uploadingFileStream);
     void Remove(string filename);
+    DirectoryInfo DirectoryInfo { get; }
   }
 }

@@ -12,6 +12,7 @@ namespace Models
     public string UserId { get; set; }
     public DateTime CreationTime { get; set; }
     public string Name { get; set; }
+    public string Filename { get; set; }
   }
 
   public class ImageCreationInfo

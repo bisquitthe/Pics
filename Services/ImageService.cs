@@ -31,7 +31,8 @@ namespace Services
       {
         Name = imageCreationInfo.Name,
         CreationTime = DateTime.Now,
-        UserId = imageCreationInfo.UserId
+        UserId = imageCreationInfo.UserId,
+        Filename = Path.Combine(this.imageFileRepository.DirectoryInfo.FullName, imageCreationInfo.Name)
       };
 
       //Needs transactions.

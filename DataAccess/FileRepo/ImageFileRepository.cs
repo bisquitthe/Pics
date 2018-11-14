@@ -10,7 +10,7 @@ namespace DataAccess
   public class ImageFileRepository : IFileRepository<Image>
   {
     private readonly string directoryName;
-    private readonly DirectoryInfo directoryInfo;
+    public DirectoryInfo DirectoryInfo { get; private set; }
 
     public async Task Save(string filename, Stream uploadingFileStream)
     {
@@ -40,7 +40,7 @@ namespace DataAccess
     public ImageFileRepository(string rootPath)
     {
       this.directoryName = Path.Combine(rootPath, "user_images_files");
-      this.directoryInfo = new DirectoryInfo(this.directoryName);
+      this.DirectoryInfo = new DirectoryInfo(this.directoryName);
     }
   }
 }

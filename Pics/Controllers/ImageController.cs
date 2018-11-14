@@ -64,8 +64,8 @@ namespace Pics.Controllers
       return Ok();
     }
 
-    [HttpPost("images/remove")]
-    public async Task<IActionResult> RemoveImage([FromBody]string id)
+    [HttpDelete("images/remove")]
+    public async Task<IActionResult> RemoveImage([FromQuery]string id)
     {
       try
       {

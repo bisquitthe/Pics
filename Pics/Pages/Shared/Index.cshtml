@@ -6,8 +6,8 @@
       signIn: '@Url.RouteUrl("default", new {controller = "User", action = "SignIn" },"http")',
       signUp: '@Url.RouteUrl("default", new {controller = "User", action = "SignUp" }, "http")',
       newImage: '@Url.RouteUrl("default", new {controller = "Image", action = "ImportImage" }, "http")',
-      getImages: '@Url.RouteUrl("default", new {controller = "Image", action = "GetImages" }, "http")',
-      removeImage: '@Url.RouteUrl("default", new {controller = "Image", action = "RemoveImage" }, "http")',
+      getImages: '@Url.RouteUrl("default", new {controller = "Image", action = "GetImages", page = "" }, "http")',
+      removeImage: '@Url.RouteUrl("default", new {controller = "Image", action = "RemoveImage", id = "" }, "http")',
       getPagesCount: '@Url.RouteUrl("default", new {controller = "Image", action = "GetPagesCount" }, "http")'
     }
   </script>
