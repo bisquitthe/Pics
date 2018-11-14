@@ -17,6 +17,9 @@ namespace Services
 
     public async Task<string> GetJwt(string login, string password)
     {
+      if(string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+        throw new UserNotFoundException();
+
       var identity = await GetIdentity(login, password);
       if (identity == null)
       {

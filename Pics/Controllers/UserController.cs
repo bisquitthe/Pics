@@ -8,18 +8,19 @@ using Services;
 
 namespace Pics.Controllers
 {
+  [ApiController]
   public class UserController : Controller
   {
     private readonly IAuthService authService;
     private readonly IUserService userService;
 
-    [HttpPost("/signin")]
-    public async Task<IActionResult> SignIn(string login, string password)
+    [HttpPost("[controller]/signin")]
+    public async Task<IActionResult> SignIn(Credentials credentials)
     {
       string jwtString;
       try
       {
-        jwtString = await this.authService.GetJwt(login, password);
+        jwtString = await this.authService.GetJwt(credentials.Login, credentials.Password);
       }
       catch (UserNotFoundException)
       {
@@ -29,17 +30,17 @@ namespace Pics.Controllers
       return Ok(new
       {
         access_token = jwtString,
-        username = login
+        username = credentials.Login
       });
     }
 
-    [HttpPost("/signup")]
-    public async Task<IActionResult> SignUp(string login, string password)
+    [HttpPost("[controller]/signup")]
+    public async Task<IActionResult> SignUp(Credentials credentials)
     {
       User user = null;
       try
       {
-        user = await this.userService.RegisterUser(login, password);
+        user = await this.userService.RegisterUser(credentials.Login, credentials.Password);
       }
       catch (UserExistsException)
       {

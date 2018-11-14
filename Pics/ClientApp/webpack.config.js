@@ -13,7 +13,7 @@ module.exports = {
   devtool: "source-map",
   output: {
     filename: "bundle.js",
-    //publicPath: 'public/',
+    publicPath: './bundle/',
     path: path.resolve(__dirname, bundleFolder)
   },
   resolve: {

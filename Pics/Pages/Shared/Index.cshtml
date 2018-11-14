@@ -3,12 +3,12 @@
 <head>
   <script type="text/javascript">
     constants = {
-      signIn: '@Url.RouteUrl("DefaultApi", new {controller = "User", action = "SignIn" })',
-      signUp: '@Url.RouteUrl("DefaultApi", new {controller = "User", action = "SignUp" })',
-      newImage: '@Url.RouteUrl("DefaultApi", new {controller = "Image", action = "ImportImage" })',
-      getImages: '@Url.RouteUrl("DefaultApi", new {controller = "Image", action = "GetImages" })',
-      removeImage: '@Url.RouteUrl("DefaultApi", new {controller = "Image", action = "RemoveImage" })',
-      getPagesCount: '@Url.RouteUrl("DefaultApi", new {controller = "Image", action = "GetPagesCount" })'
+      signIn: '@Url.RouteUrl("default", new {controller = "User", action = "SignIn" },"http")',
+      signUp: '@Url.RouteUrl("default", new {controller = "User", action = "SignUp" }, "http")',
+      newImage: '@Url.RouteUrl("default", new {controller = "Image", action = "ImportImage" }, "http")',
+      getImages: '@Url.RouteUrl("default", new {controller = "Image", action = "GetImages" }, "http")',
+      removeImage: '@Url.RouteUrl("default", new {controller = "Image", action = "RemoveImage" }, "http")',
+      getPagesCount: '@Url.RouteUrl("default", new {controller = "Image", action = "GetPagesCount" }, "http")'
     }
   </script>
   <meta name="viewport" content="width=device-width" />
@@ -27,6 +27,6 @@
 </head>
 <body>
   <div id="app"></div>
-  <script type="text/javascript" src='@Url.Content("~/ClientApp/bundle/bundle.js")'></script>
+  <script type="text/javascript" src="~/ClientApp/bundle/bundle.js" asp-append-version="true"></script>
 </body>
 </html>

@@ -1,12 +1,15 @@
+using System.IO;
 using DataAccess;
 using DataAccess.FileRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using MongoDB.Driver;
@@ -48,10 +51,10 @@ namespace Pics
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
       // In production, the React files will be served from this directory
-      services.AddSpaStaticFiles(configuration =>
-      {
-        configuration.RootPath = "ClientApp/build";
-      });
+      //services.AddSpaStaticFiles(configuration =>
+      //{
+      //  configuration.RootPath = "ClientApp/build";
+      //});
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,8 +70,13 @@ namespace Pics
         app.UseExceptionHandler("/Error");
       }
 
-      app.UseStaticFiles();
-      app.UseSpaStaticFiles();
+      app.UseStaticFiles(new StaticFileOptions()
+      {
+        FileProvider = new PhysicalFileProvider(
+          Path.Combine(Directory.GetCurrentDirectory(), @"ClientApp/")),
+        RequestPath = new PathString("/ClientApp")
+      });
+      //app.UseSpaStaticFiles();
 
       app.UseMvc(routes =>
       {
@@ -78,15 +86,15 @@ namespace Pics
         routes.MapSpaFallbackRoute("spa-fallback", new {controller = "Home", action = "Index"});
       });
 
-      app.UseSpa(spa =>
-      {
-        spa.Options.SourcePath = "ClientApp";
+      //app.UseSpa(spa =>
+      //{
+      //  spa.Options.SourcePath = "ClientApp";
 
-        if (env.IsDevelopment())
-        {
-          spa.UseReactDevelopmentServer(npmScript: "start");
-        }
-      });
+      //  if (env.IsDevelopment())
+      //  {
+      //    //spa.UseReactDevelopmentServer(npmScript: "start");
+      //  }
+      //});
 
       this.ContentRoot = env.ContentRootPath;
     }

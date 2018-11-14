@@ -11,6 +11,7 @@ using Services;
 namespace Pics.Controllers
 {
   [Authorize(AuthenticationSchemes = "Bearer")]
+  [ApiController]
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
@@ -25,7 +26,7 @@ namespace Pics.Controllers
     }
 
     [HttpGet("images")]
-    public async Task<IActionResult> GetImages(int page)
+    public async Task<IActionResult> GetImages([FromBody]int page)
     {
       IEnumerable<Image> images;
       try
@@ -64,7 +65,7 @@ namespace Pics.Controllers
     }
 
     [HttpPost("images/remove")]
-    public async Task<IActionResult> RemoveImage(string id)
+    public async Task<IActionResult> RemoveImage([FromBody]string id)
     {
       try
       {

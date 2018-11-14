@@ -1,11 +1,9 @@
-import config from 'config';
 import { authHeader } from '../_helpers';
 
 export const userService = {
     login,
     logout,
     register,
-    getAll,
 };
 
 function login(login, password) {
@@ -15,7 +13,7 @@ function login(login, password) {
         body: JSON.stringify({ login, password })
     };
 
-    return fetch(`${config.apiUrl}/signin`, requestOptions)
+    return fetch(`${constants.signIn}`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a jwt token in the response
@@ -33,14 +31,14 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
+//function getAll() {
+//    const requestOptions = {
+//        method: 'GET',
+//        headers: authHeader()
+//    };
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
-}
+//  return fetch(`${constants.signIn}/users`, requestOptions).then(handleResponse);
+//}
 
 function register(user) {
     const requestOptions = {
@@ -49,7 +47,7 @@ function register(user) {
         body: JSON.stringify(user)
     };
 
-    return fetch(`${config.apiUrl}/signup`, requestOptions).then(handleResponse);
+  return fetch(`${constants.signUp}`, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
