@@ -11,7 +11,6 @@ using Services;
 namespace Pics.Controllers
 {
   [ApiController]
-  [DisableCors]
   public class UserController : Controller
   {
     private readonly IAuthService authService;

@@ -14,7 +14,6 @@ namespace Pics.Controllers
 {
   [Authorize(AuthenticationSchemes = "Bearer")]
   [ApiController]
-  [DisableCors]
   public class ImageController : Controller
   {
     private readonly IImageService imageService;
