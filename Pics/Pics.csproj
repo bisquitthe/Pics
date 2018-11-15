@@ -32,6 +32,16 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\_models\image.ts" />
+    <None Remove="user_images_files\262638.jpg" />
+    <None Remove="user_images_files\983794168.jpg" />
+    <None Remove="user_images_files\CMS_Creative_164657191_Kingfisher.jpg" />
+    <None Remove="user_images_files\images %281%29.jpg" />
+    <None Remove="user_images_files\images.jpg" />
+    <None Remove="user_images_files\img %28118%29.jpg" />
+    <None Remove="user_images_files\lord-shiva-hd-images.jpg" />
+    <None Remove="user_images_files\pexels-photo.jpg" />
+    <None Remove="user_images_files\photo-1535498730771-e735b998cd64.jpg" />
+    <None Remove="user_images_files\rose-blue-flower-rose-blooms-67636.jpeg" />
   </ItemGroup>
 
   <ItemGroup>
